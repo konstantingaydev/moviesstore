@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Reply to a Review</h2>
+    
+    <div class="card mb-3">
+        <div class="card-body">
+            <blockquote class="blockquote mb-0">
+                <p>"{{ review.comment }}"</p>
+                <footer class="blockquote-footer">
+                    <strong>{{ review.user.username }}</strong> on 
+                    <cite>{{ review.movie.name }}</cite>
+                </footer>
+            </blockquote>
+        </div>
+    </div>
+
+    <h4>Your Reply:</h4>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <textarea class="form-control" name="comment" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Submit Reply</button>
+    </form>
+</div>
+{% endblock %}

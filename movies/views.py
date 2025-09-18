@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Movie, Review
+from .models import Movie, Review, Reply
 from django.contrib.auth.decorators import login_required
 
 def index(request):
@@ -61,3 +61,26 @@ def delete_review(request, id, review_id):
     review = get_object_or_404(Review, id=review_id, user=request.user)
     review.delete()
     return redirect('movies.show', id=id)
+
+@login_required # Ensures only logged-in users can reply
+def create_reply(request, review_id):
+    # Find the parent review
+    review = get_object_or_404(Review, pk=review_id)
+    if request.method == 'POST':
+        comment_text = request.POST.get('comment')
+        if comment_text:
+            # Create the reply object
+            Reply.objects.create(
+                review=review,
+                user=request.user,
+                comment=comment_text
+            )
+        # Redirect back to the movie detail page
+        return redirect('movies.show', id=review.movie.id)
+    
+    # If not a POST request, show the form page
+    context = {
+        'review': review
+    }
+    # You'll need to create this new template
+    return render(request, 'movies/create_reply.html', context)

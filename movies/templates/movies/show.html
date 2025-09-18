@@ -38,7 +38,12 @@
               {{ review.date }}
             </h6>
             <p class="card-text">{{ review.comment }}</p>
-            {% if user.is_authenticated and user == review.user %}
+
+            {% if user.is_authenticated %}
+            <a class="btn btn-sm btn-outline-primary" href="{% url 'movies.create_reply' review.id %}">
+              Reply
+            </a>
+            {% endif %}  {% if user.is_authenticated and user == review.user %}
             <a class="btn btn-primary"
               href="{% url 'movies.edit_review' id=template_data.movie.id review_id=review.id %}">
               Edit
@@ -48,6 +53,17 @@
               Delete
             </a>
             {% endif %}
+
+            <div class="replies mt-3" style="margin-left: 20px;">
+              {% for reply in review.replies.all %}
+              <div class="reply-card border-left pl-3 mb-2">
+                <p style="font-size: 0.9em;">"{{ reply.comment }}"</p>
+                <small class="text-muted">
+                  — <strong>{{ reply.user.username }}</strong> on {{ reply.date|date:"F j, Y" }}
+                </small>
+              </div>
+              {% endfor %}
+            </div>
           </li>
           {% endfor %}
         </ul>
@@ -65,7 +81,6 @@
                       <label for="comment">Comment:</label>
                       <textarea name="comment" required class="form-control" id="comment"></textarea>
                     </p>
-
                     <div class="text-center">
                       <button type="submit" class="btn bg-dark text-white">
                         Add Review
