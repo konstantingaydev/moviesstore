@@ -1,0 +1,32 @@
+{% extends "base.html" %} 
+
+{% block title %}Submit New Petition{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="my-4">Submit New Movie Petition</h1>
+        
+        <form method="POST" action="{% url 'petitions.create' %}">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="title" class="form-label">Movie Title</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="description" class="form-label">Why should this movie be added?</label>
+                <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Submit Petition</button>
+            <a href="{% url 'petitions.index' %}" class="btn btn-secondary">Cancel</a>
+            
+            {% if request.method == 'POST' and not request.POST.title or not request.POST.description %}
+                <div class="alert alert-danger mt-3">
+                    Error: Both the Movie Title and Description fields are required.
+                </div>
+            {% endif %}
+        </form>
+    </div>
+{% endblock %}
